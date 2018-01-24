@@ -4,31 +4,27 @@ import java.util.ArrayList;
 import java.util.Arrays;
 
 public class GalaxyExplorer {
-	int grid[][] = new int[0][0];
+	static int grid[][] = new int[0][0];
 	static int shipx;
 	static int shipy;
 	static int dir;
-	static ArrayList<String> obj = new ArrayList<String>();
-	
+	static ArrayList<String> obj = new ArrayList<String>();	
 	//0 = north
 	//1 = south
 	//2 = east
 	//3 = west
+	
 	public GalaxyExplorer(int x, int y, String enemyShips){
-		this.grid = new int[x][y];
+		grid = new int[x][y];
 		for (int i=0; i<x; i++){
 			for (int j=0; j<y; j++){
-				this.grid[i][j]=0;
+				grid[i][j]=0;
 			}
 		}
-		String[] coords = enemyShips.split("[(-,]");
-		String part1 = null;
-		String part2 = null;
 		
+		String[] coords = enemyShips.split("[(-,]");		
 		for (int i=1; i<coords.length; i+=3){
-			part1 = coords[i];	
-			part2 = coords[i+1];
-			this.grid[Integer.parseInt(part1)][Integer.parseInt(part2)] = 1;
+			grid[Integer.parseInt(coords[i])][Integer.parseInt(coords[i+1])] = 1;
 		}
 		/*	x and y represent the size of the galaxy grid.
 		 *  enemyShips is a String formatted as follows: "(es1_x,es1_y)(es2_x,es2_y)...(esN_x,eN_y)" with no white spaces, 
@@ -39,62 +35,12 @@ public class GalaxyExplorer {
 			//A 100x100 galaxy grid with two enemy ships at coordinates (5,5) and (7,8) 
 		 */		
 	}
-	
 
-	public boolean enemy(int shipx, int shipy){
-		switch (dir){
-		case 0:
-			if (this.grid[shipx][shipy+1] == 1){
-				returning(shipx, shipy+1);
-				return true;
-			}else return false;
-		case 1:
-			if (this.grid[shipx][shipy-1] == 1){
-				returning(shipx, shipy-1);
-				return true;
-			}else return false;
-		case 2:
-			if (this.grid[shipx+1][shipy] == 1){
-				returning(shipx+1, shipy);
-				return true;
-			}else return false;
-		case 3:
-			if (this.grid[shipx-1][shipy] == 1){
-				returning(shipx-1, shipy);
-				return true;
-			}else return false;
-		}
-		return false;
-	}
 	
-	public boolean enemyBack(int shipx, int shipy){
-		if (dir ==0){
-			if (this.grid[shipx][shipy-1] == 1){
-				returning(shipx, shipy-1);
-				return true;
-			}else return false;
-		}else if (dir == 1){
-			if (this.grid[shipx][shipy+1] == 1){
-				returning(shipx, shipy+1);
-				return true;
-			}else return false;
-		}else if (dir == 2){
-			if (this.grid[shipx-1][shipy] == 1){
-				returning(shipx-1, shipy);
-				return true;
-			}else return false;
-		}else if (dir == 3){
-			if (this.grid[shipx+1][shipy] == 1){
-				returning(shipx+1, shipy);
-				return true;
-			}else return false;
-		}
-		return false;	
-	}
-	
-	public String returning(int shipx, int shipy){
+	public static String returning(int shipx, int shipy){
 		StringBuilder sb = new StringBuilder();
 		sb.append(shipx);
+		sb.append(";");
 		sb.append(shipy);
 		if (obj.contains(sb.toString())){
 		}else obj.add(sb.toString());
@@ -103,20 +49,72 @@ public class GalaxyExplorer {
 	
 	
 	public String executeCommand(String command){
-		shipx=0;
-		shipy=0;
-		dir=0;
 		for(int i=0; i<command.length(); i++){
-			this.grid[shipx][shipy] = 2;
+			grid[shipx][shipy] = 2;
+
 			switch(command.charAt(i)){
 			case 'f':
-				if (enemy(shipx, shipy)==true){
+				try{
+				if (EnemyShips.enemyFront(shipx, shipy)==true){
+					
 				}else Movement.forward(dir);
+				}
+				catch(ArrayIndexOutOfBoundsException E) {
+					switch(dir){
+					case 0:
+						if (grid[shipx][0] == 1){
+							returning(shipx, 0);
+						}else shipy=0;
+						break;
+					case 1:
+						if (grid[shipx][getCols()-1] == 1){
+							returning(shipx, getCols()-1);
+						}else shipy=getCols()-1;
+						break;
+					case 2:
+						if (grid[0][shipy] == 1){
+							returning(0, shipy);
+						}else shipx=0;
+						break;
+					case 3:
+						shipx=getRows()-1;
+						if (grid[getRows()-1][shipy] == 1){
+							returning(getRows()-1, shipy);
+						}else shipy=getRows()-1;
+						break;
+					}
+				}
 				break;
 			case 'b':
-				if (enemyBack(shipx, shipy)==true){
+				try{
+				if (EnemyShips.enemyBack(shipx, shipy)==true){
 					
 				}else Movement.backwards(dir);
+				}
+				catch (ArrayIndexOutOfBoundsException E){
+					switch(dir){
+					case 0:
+						if (grid[shipx][getCols()-1] == 1){
+							returning(shipx, getCols()-1);
+						}else shipy=getCols()-1;
+						break;
+					case 1:
+						if (grid[shipx][0] == 1){
+							returning(shipx, 0);
+						}else shipy=0;
+						break;
+					case 2:
+						if (grid[getRows()-1][shipy] == 1){
+							returning(getRows()-1, shipy);
+						}else shipx=getRows()-1;
+						break;
+					case 3:
+						if (grid[0][shipy] == 1){
+							returning(0, shipy);
+						}else shipx=0;
+						break;
+					}
+				}
 				break;
 			case 'l':
 				dir = Movement.left(dir);
@@ -126,6 +124,8 @@ public class GalaxyExplorer {
 				break;
 			default: System.out.println("unknown direction");
 		}
+//			System.out.println(shipx);
+//			System.out.println(shipy);
 		}
 		
 		String direction = null;
@@ -138,19 +138,29 @@ public class GalaxyExplorer {
 		}else if (dir == 3){
 			direction = "W";
 		}
-		
 		StringBuilder sb1 = new StringBuilder();
 		for (String s : obj)
 		{
+			sb1.append("(");
 		    sb1.append(s);
-		}
-		StringBuilder sb2 = new StringBuilder();
-		for (int i=0; i<sb1.length(); i+=2){
-			sb2.append("("+sb1.charAt(i)+";"+(sb1.charAt(i+1))+")");
-		}
+		    sb1.append(")");
+		}		
+		String[] coords_enemy = sb1.toString().split("[,]");
 
-		String result = ("("+shipx+";"+shipy+";"+direction+")"+sb2);
+		String result = ("("+shipx+";"+shipy+";"+direction+")"+Arrays.toString(coords_enemy).replace("[", "").replace("]", ""));
+		
+		
+/*		for (int i=0; i<getRows(); i++){
+			for (int j=0; j<getCols(); j++){
+				System.out.print(grid[i][j]+" ");
+			}
+			System.out.println();
+		}*/
+		
+		
 		System.out.println(result);
+
+		
 		return result;
 		/* The command string is composed of any combination of "f" (forward), "b" (backward), "l" (left) and "r" (right)
 		 * Starting from (0,0,N) - quadrant (0,0) facing North - the starship executes these commands.
@@ -168,27 +178,15 @@ public class GalaxyExplorer {
 	}
 	
 	public int getRows() {
-		return this.grid.length; //returning rows
+		return grid.length; //returning rows
 	}
 
 	public int getCols() {
-		return this.grid[0].length;	//returning columns
-	}
-	
-	public String toString(){
-		for (int i=0; i<getRows(); i++){
-			for (int j=0; j<getCols(); j++){
-				System.out.print(this.grid[j][i]+" ");
-			}
-			System.out.println();
-		}
-		return null;
+		return grid[0].length;	//returning columns
 	}
 
 	public static void main(String[] args){
-		GalaxyExplorer enterprise = new GalaxyExplorer(100,100,"(0,20)(3,2)");
-		enterprise.executeCommand("ffffffffffffffffffff");
-		enterprise.toString();
-		System.out.println(obj);
+		GalaxyExplorer enterprise = new GalaxyExplorer(10,10,"(0,1)(0,2)");
+		enterprise.executeCommand("");
 	}
 }
