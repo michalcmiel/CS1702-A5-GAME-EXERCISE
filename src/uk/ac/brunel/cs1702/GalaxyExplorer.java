@@ -21,7 +21,6 @@ public class GalaxyExplorer {
 				grid[i][j]=0;
 			}
 		}
-		
 		String[] coords = enemyShips.split("[(-,]");		
 		for (int i=1; i<coords.length; i+=3){
 			grid[Integer.parseInt(coords[i])][Integer.parseInt(coords[i+1])] = 1;
@@ -51,11 +50,10 @@ public class GalaxyExplorer {
 	public String executeCommand(String command){
 		for(int i=0; i<command.length(); i++){
 			grid[shipx][shipy] = 2;
-
 			switch(command.charAt(i)){
 			case 'f':
 				try{
-				if (EnemyShips.enemyFront(shipx, shipy)==true){
+				if (IsObstacle.Front(shipx, shipy)==true){
 					
 				}else Movement.forward(dir);
 				}
@@ -77,7 +75,6 @@ public class GalaxyExplorer {
 						}else shipx=0;
 						break;
 					case 3:
-						shipx=getRows()-1;
 						if (grid[getRows()-1][shipy] == 1){
 							returning(getRows()-1, shipy);
 						}else shipy=getRows()-1;
@@ -87,7 +84,7 @@ public class GalaxyExplorer {
 				break;
 			case 'b':
 				try{
-				if (EnemyShips.enemyBack(shipx, shipy)==true){
+				if (IsObstacle.Back(shipx, shipy)==true){
 					
 				}else Movement.backwards(dir);
 				}
@@ -150,12 +147,12 @@ public class GalaxyExplorer {
 		String result = ("("+shipx+";"+shipy+";"+direction+")"+Arrays.toString(coords_enemy).replace("[", "").replace("]", ""));
 		
 		
-/*		for (int i=0; i<getRows(); i++){
+		for (int i=0; i<getRows(); i++){
 			for (int j=0; j<getCols(); j++){
 				System.out.print(grid[i][j]+" ");
 			}
 			System.out.println();
-		}*/
+		}
 		
 		
 		System.out.println(result);
@@ -170,7 +167,7 @@ public class GalaxyExplorer {
 		 * Example: 
 		 * The starship is on a 100x100 galaxy initially at location (0,0) and facing NORTH. The rover is given the commands "ffrff" and should end up at (2, 2) facing East.
 		 
-		 * The return string is in the following format: "(x;y;facing)(es1_x;es1_y)(es2_x;es2_y)...(esN_x;esN_y)"  No white spaces.
+		 * The return string is in the followng format: "(x;y;facing)(es1_x;es1_y)(es2_x;es2_y)...(esN_x;esN_y)"  No white spaces.
 		 * Where x and y are the final coordinates, facing is the final direction the startship is pointing to, i.e. (N,S,W,E).
 		 * The return string should also contain a list of coordinates of the encountered enemy ships, which can be an arbitrary number.
 		 * Please note the format of the result, which uses a semi-column rather than a comma, as a delimiter. 
@@ -186,7 +183,7 @@ public class GalaxyExplorer {
 	}
 
 	public static void main(String[] args){
-		GalaxyExplorer enterprise = new GalaxyExplorer(10,10,"(0,1)(0,2)");
-		enterprise.executeCommand("");
+		GalaxyExplorer enterprise = new GalaxyExplorer(10,10,"(0,2)");
+		enterprise.executeCommand("frflflbbbbbbbbbbb");
 	}
 }

@@ -1,7 +1,7 @@
 package uk.ac.brunel.cs1702;
 
-public class EnemyShips {
-	public static boolean enemyFront(int shipx, int shipy){
+public class IsObstacle {
+	public static boolean Front(int shipx, int shipy){
 		switch (GalaxyExplorer.dir){
 		case 0:
 			if (GalaxyExplorer.grid[shipx][shipy+1] == 1){
@@ -26,7 +26,7 @@ public class EnemyShips {
 		}
 		return false;
 	}	
-	public static boolean enemyBack(int shipx, int shipy){
+	public static boolean Back(int shipx, int shipy){
 		if (GalaxyExplorer.dir ==0){
 			if (GalaxyExplorer.grid[shipx][shipy-1] == 1){
 				GalaxyExplorer.returning(shipx, shipy-1);
