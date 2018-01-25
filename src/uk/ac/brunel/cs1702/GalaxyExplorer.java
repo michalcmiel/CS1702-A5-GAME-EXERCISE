@@ -52,7 +52,6 @@ public class GalaxyExplorer {
 			case 'f':
 				try{
 				if (IsObstacle.Front(shipx, shipy)==true){
-					
 				}else Movement.forward(dir);
 				}
 				catch(ArrayIndexOutOfBoundsException E) {
@@ -143,19 +142,12 @@ public class GalaxyExplorer {
 		String[] coords_enemy = sb1.toString().split("[,]");
 
 		String result = ("("+shipx+";"+shipy+";"+direction+")"+Arrays.toString(coords_enemy).replace("[", "").replace("]", ""));
-		
-		
 /*		for (int i=0; i<getRows(); i++){
 			for (int j=0; j<getCols(); j++){
 				System.out.print(grid[i][j]+" ");
 			}
 			System.out.println();
-		}*/
-		
-		
-		System.out.println(result);
-
-		
+		}*/	
 		return result;
 		/* The command string is composed of any combination of "f" (forward), "b" (backward), "l" (left) and "r" (right)
 		 * Starting from (0,0,N) - quadrant (0,0) facing North - the starship executes these commands.
@@ -181,7 +173,7 @@ public class GalaxyExplorer {
 	}
 
 	public static void main(String[] args){
-		GalaxyExplorer enterprise = new GalaxyExplorer(10,10,"(0,2)");
-		enterprise.executeCommand("");
+		GalaxyExplorer enterprise = new GalaxyExplorer(10,10,"(0,1)");
+		System.out.println(enterprise.executeCommand(""));
 	}
 }
