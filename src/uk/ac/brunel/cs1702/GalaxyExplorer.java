@@ -35,8 +35,7 @@ public class GalaxyExplorer {
 		 */		
 	}
 
-	
-	public static String returning(int shipx, int shipy){
+	public static String AddEnemy(int shipx, int shipy){
 		StringBuilder sb = new StringBuilder();
 		sb.append(shipx);
 		sb.append(";");
@@ -45,7 +44,6 @@ public class GalaxyExplorer {
 		}else obj.add(sb.toString());
 		return null;
 	}
-	
 	
 	public String executeCommand(String command){
 		for(int i=0; i<command.length(); i++){
@@ -61,22 +59,22 @@ public class GalaxyExplorer {
 					switch(dir){
 					case 0:
 						if (grid[shipx][0] == 1){
-							returning(shipx, 0);
+							AddEnemy(shipx, 0);
 						}else shipy=0;
 						break;
 					case 1:
 						if (grid[shipx][getCols()-1] == 1){
-							returning(shipx, getCols()-1);
+							AddEnemy(shipx, getCols()-1);
 						}else shipy=getCols()-1;
 						break;
 					case 2:
 						if (grid[0][shipy] == 1){
-							returning(0, shipy);
+							AddEnemy(0, shipy);
 						}else shipx=0;
 						break;
 					case 3:
 						if (grid[getRows()-1][shipy] == 1){
-							returning(getRows()-1, shipy);
+							AddEnemy(getRows()-1, shipy);
 						}else shipy=getRows()-1;
 						break;
 					}
@@ -92,22 +90,22 @@ public class GalaxyExplorer {
 					switch(dir){
 					case 0:
 						if (grid[shipx][getCols()-1] == 1){
-							returning(shipx, getCols()-1);
+							AddEnemy(shipx, getCols()-1);
 						}else shipy=getCols()-1;
 						break;
 					case 1:
 						if (grid[shipx][0] == 1){
-							returning(shipx, 0);
+							AddEnemy(shipx, 0);
 						}else shipy=0;
 						break;
 					case 2:
 						if (grid[getRows()-1][shipy] == 1){
-							returning(getRows()-1, shipy);
+							AddEnemy(getRows()-1, shipy);
 						}else shipx=getRows()-1;
 						break;
 					case 3:
 						if (grid[0][shipy] == 1){
-							returning(0, shipy);
+							AddEnemy(0, shipy);
 						}else shipx=0;
 						break;
 					}
@@ -147,12 +145,12 @@ public class GalaxyExplorer {
 		String result = ("("+shipx+";"+shipy+";"+direction+")"+Arrays.toString(coords_enemy).replace("[", "").replace("]", ""));
 		
 		
-		for (int i=0; i<getRows(); i++){
+/*		for (int i=0; i<getRows(); i++){
 			for (int j=0; j<getCols(); j++){
 				System.out.print(grid[i][j]+" ");
 			}
 			System.out.println();
-		}
+		}*/
 		
 		
 		System.out.println(result);
@@ -184,6 +182,6 @@ public class GalaxyExplorer {
 
 	public static void main(String[] args){
 		GalaxyExplorer enterprise = new GalaxyExplorer(10,10,"(0,2)");
-		enterprise.executeCommand("frflflbbbbbbbbbbb");
+		enterprise.executeCommand("");
 	}
 }
