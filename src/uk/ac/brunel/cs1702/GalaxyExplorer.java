@@ -5,9 +5,7 @@ import java.util.Arrays;
 
 public class GalaxyExplorer {
 	static int grid[][] = new int[0][0];
-	static int shipx;
-	static int shipy;
-	static int dir;
+	int shipx, shipy, dir;
 	static ArrayList<String> obj = new ArrayList<String>();	
 	//0 = north
 	//1 = south
@@ -24,25 +22,145 @@ public class GalaxyExplorer {
 		String[] coords = enemyShips.split("[(-,]");		
 		for (int i=1; i<coords.length; i+=3){
 			grid[Integer.parseInt(coords[i])][Integer.parseInt(coords[i+1])] = 1;
-		}
-		/*	x and y represent the size of the galaxy grid.
-		 *  enemyShips is a String formatted as follows: "(es1_x,es1_y)(es2_x,es2_y)...(esN_x,eN_y)" with no white spaces, 
-		 *  representing the location of enemy ships. 
-		 *  
-			Example use:
-			GalaxyExplorer enterprise = new GalaxyExplorer(100,100,"(5,5)(7,8)")  
-			//A 100x100 galaxy grid with two enemy ships at coordinates (5,5) and (7,8) 
-		 */		
+		}	
 	}
-
-	public static String AddEnemy(int shipx, int shipy){
-		StringBuilder sb = new StringBuilder();
+	
+	static StringBuilder sb = new StringBuilder();
+	public static void AddEnemy(int shipx, int shipy){
+		sb.append("(");
 		sb.append(shipx);
 		sb.append(";");
 		sb.append(shipy);
-		if (obj.contains(sb.toString())){
-		}else obj.add(sb.toString());
-		return null;
+		sb.append(")");
+
+/*		if (obj.contains(sb.toString())){
+		}else obj.add(sb.toString());*/
+		
+//		StringBuilder sb1 = new StringBuilder();
+//		for (String s : obj)
+//		{
+//			sb1.append("(");
+//		    sb1.append(s);
+//		    sb1.append(")");
+//		}		
+//		coords_enemy = sb1.toString().split("[,]");
+	}
+	
+	public boolean isObstacleFront(int shipx, int shipy){
+		switch (dir){
+		case 0:
+			if (grid[shipx][shipy+1] == 1){
+				AddEnemy(shipx, shipy+1);
+				return true;
+			}else return false;
+		case 1:
+			if (grid[shipx][shipy-1] == 1){
+				AddEnemy(shipx, shipy-1);
+				return true;
+			}else return false;
+		case 2:
+			if (grid[shipx+1][shipy] == 1){
+				AddEnemy(shipx+1, shipy);
+				return true;
+			}else return false;
+		case 3:
+			if (grid[shipx-1][shipy] == 1){
+				AddEnemy(shipx-1, shipy);
+				return true;
+			}else return false;
+		}
+		return false;
+	}	
+	public boolean IsObstacleBack(int shipx, int shipy){
+		if (dir ==0){
+			if (grid[shipx][shipy-1] == 1){
+				AddEnemy(shipx, shipy-1);
+				return true;
+			}else return false;
+		}else if (dir == 1){
+			if (grid[shipx][shipy+1] == 1){
+				AddEnemy(shipx, shipy+1);
+				return true;
+			}else return false;
+		}else if (dir == 2){
+			if (grid[shipx-1][shipy] == 1){
+				AddEnemy(shipx-1, shipy);
+				return true;
+			}else return false;
+		}else if (dir == 3){
+			if (grid[shipx+1][shipy] == 1){
+				AddEnemy(shipx+1, shipy);
+				return true;
+			}else return false;
+		}
+		return false;	
+	}
+	public void forward (int dir){
+		switch (dir){
+		case 0:
+			shipy++;
+			break;
+		case 1:
+			shipy--;
+			break;
+		case 2:
+			shipx++;
+			break;
+		case 3:
+			shipx--;
+			break;
+		}
+	}
+	
+	public void backwards(int dir){
+		switch(dir){
+		case 0:
+			shipy--;
+			break;
+		case 1:
+			shipy++;
+			break;
+		case 2:
+			shipx--;
+			break;
+		case 3:
+			shipx++;
+			break;
+		}
+	}
+	public int left(int dir){
+		switch (dir){
+		case 0:
+			dir = 3;
+			break;
+		case 1:
+			dir = 2;
+			break;
+		case 2:
+			dir = 0;
+			break;
+		case 3:
+			dir = 1;
+			break;
+		}
+		return dir;
+	}	
+	public int right(int dir){
+		switch(dir){
+		case 0:
+			dir = 2;
+			break;
+		case 1:
+			dir = 3;
+			break;
+		case 2:
+			dir = 1;
+			break;
+		case 3:
+			dir = 0;
+			break;
+		}
+		return dir;
 	}
 	
 	public String executeCommand(String command){
@@ -51,8 +169,8 @@ public class GalaxyExplorer {
 			switch(command.charAt(i)){
 			case 'f':
 				try{
-				if (IsObstacle.Front(shipx, shipy)==true){
-				}else Movement.forward(dir);
+				if (isObstacleFront(shipx, shipy)==true){
+				}else forward(dir);
 				}
 				catch(ArrayIndexOutOfBoundsException E) {
 					switch(dir){
@@ -81,9 +199,9 @@ public class GalaxyExplorer {
 				break;
 			case 'b':
 				try{
-				if (IsObstacle.Back(shipx, shipy)==true){
+				if (IsObstacleBack(shipx, shipy)==true){
 					
-				}else Movement.backwards(dir);
+				}else backwards(dir);
 				}
 				catch (ArrayIndexOutOfBoundsException E){
 					switch(dir){
@@ -111,10 +229,10 @@ public class GalaxyExplorer {
 				}
 				break;
 			case 'l':
-				dir = Movement.left(dir);
+				dir = left(dir);
 				break;
 			case 'r':
-				dir = Movement.right(dir);
+				dir = right(dir);
 				break;
 			default: System.out.println("unknown direction");
 		}
@@ -132,16 +250,9 @@ public class GalaxyExplorer {
 		}else if (dir == 3){
 			direction = "W";
 		}
-		StringBuilder sb1 = new StringBuilder();
-		for (String s : obj)
-		{
-			sb1.append("(");
-		    sb1.append(s);
-		    sb1.append(")");
-		}		
-		String[] coords_enemy = sb1.toString().split("[,]");
 
-		String result = ("("+shipx+";"+shipy+";"+direction+")"+Arrays.toString(coords_enemy).replace("[", "").replace("]", ""));
+		System.out.println(sb.toString());
+		String result = ("("+shipx+";"+shipy+";"+direction+")");
 /*		for (int i=0; i<getRows(); i++){
 			for (int j=0; j<getCols(); j++){
 				System.out.print(grid[i][j]+" ");
@@ -173,7 +284,7 @@ public class GalaxyExplorer {
 	}
 
 	public static void main(String[] args){
-		GalaxyExplorer enterprise = new GalaxyExplorer(10,10,"(0,1)");
-		System.out.println(enterprise.executeCommand(""));
+		GalaxyExplorer enterprise = new GalaxyExplorer(10,10,"(0,1)(0,2)");
+		System.out.println(enterprise.executeCommand("ffff"));
 	}
 }
