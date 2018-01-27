@@ -2,9 +2,11 @@ package uk.ac.brunel.cs1702;
 
 public class GalaxyExplorer {
 	static int grid[][] = new int[0][0];
-	int shipx, shipy, dir;
-	String[] coords;
-	StringBuilder sb = new StringBuilder();
+	int shipx, shipy, dir;	//ints to hold X AND Y of the ship, and the DIRECTION
+	String[] enemyCoords;	//Array that holds the coords of enemy ships
+	StringBuilder enemyShips = new StringBuilder();	//string builder to show encountered ships
+	
+	//direction meaning
 	//0 = north
 	//1 = south
 	//2 = east
@@ -13,19 +15,19 @@ public class GalaxyExplorer {
 	public GalaxyExplorer(int x, int y, String enemyShips){
 		grid = new int[x][y];
 		for (int i=0; i<x; i++){
-			for (int j=0; j<y; j++){
-				grid[i][j]=0;
+			for (int j=0; j<y; j++){		//constructor to create matrix
+				grid[i][j]=0;				//and fill it with 0
 			}
 		}
-		coords = enemyShips.split("[(-,]");		
-		for (int i=1; i<coords.length; i+=3){
-			grid[Integer.parseInt(coords[i])][Integer.parseInt(coords[i+1])] = 1;
+		enemyCoords = enemyShips.split("[(-,]");		//splits string and puts into an array 
+		for (int i=1; i<enemyCoords.length; i+=3){		//goes through the array and fills enemies as "1"
+			grid[Integer.parseInt(enemyCoords[i])][Integer.parseInt(enemyCoords[i+1])] = 1;
 		}	
 	}
 	
-	public void AddEnemy(int shipx, int shipy){
-		if (!sb.toString().contains("("+shipx+";"+shipy+")")){
-			sb.append("("+shipx+";"+shipy+")");
+	public void AddEnemy(int shipx, int shipy){		//method to add encountered ships to a string
+		if (!enemyShips.toString().contains("("+shipx+";"+shipy+")")){	//if it doesnt contain the coords
+			enemyShips.append("("+shipx+";"+shipy+")");					//add the coords else nothing
 		}
 	}
 
@@ -41,18 +43,18 @@ public class GalaxyExplorer {
 		case 3: direction = "W";
 				break;
 		}
-		return direction;
+		return direction;			//returns the direction as string 
 	}
 	
-	public boolean isObstacleFront(int shipx, int shipy){
-		switch (dir){
+	public boolean isObstacleFront(int shipx, int shipy){	//checks if enemy ship is in front
+		switch (dir){										//depending on the direction facing
 		case 0:								//north
-			if (grid[shipx][shipy+1] == 1){
-				AddEnemy(shipx, shipy+1);
-				return true;
-			}else return false;
+			if (grid[shipx][shipy+1] == 1){	//if it is 1(enemy)
+				AddEnemy(shipx, shipy+1);	//add enemy to the string builder
+				return true;				//return true
+			}else return false;				//else if its not 1 return false.
 		case 1:								//south
-			if (grid[shipx][shipy-1] == 1){
+			if (grid[shipx][shipy-1] == 1){					//(same for each direction)
 				AddEnemy(shipx, shipy-1);
 				return true;
 			}else return false;
@@ -70,15 +72,15 @@ public class GalaxyExplorer {
 		return false;
 	}	
 	
-	public boolean isObstacleBack(int shipx, int shipy){
-		switch (dir){
+	public boolean isObstacleBack(int shipx, int shipy){	//checks if enemy ship is in back 
+		switch (dir){										//depending on the direction
 		case 0:								//north
-			if (grid[shipx][shipy-1] == 1){
-				AddEnemy(shipx, shipy-1);
-				return true;
-			}else return false;
+			if (grid[shipx][shipy-1] == 1){	//if it is 1(enemy)
+				AddEnemy(shipx, shipy-1);	//add enemy to the string builder
+				return true;				//return true
+			}else return false;				//else if its not 1 return false
 		case 1:								//south
-			if (grid[shipx][shipy+1] == 1){
+			if (grid[shipx][shipy+1] == 1){					//same for each direction
 				AddEnemy(shipx, shipy+1);
 				return true;
 			}else return false;
@@ -96,17 +98,17 @@ public class GalaxyExplorer {
 		return false;
 	}
 	
-	public void isObstacleFrontWarp(int dir){
-		switch(dir){
+	public void isObstacleFrontWarp(int dir){	//checks if enemy is in square after front warping
+		switch(dir){							//depending on the directiion
 		case 0:								//north
-			if (grid[shipx][0] == 1){
-				AddEnemy(shipx, 0);
-			}else shipy=0;
+			if (grid[shipx][0] == 1){			//if warping front when facing north enemy is present
+				AddEnemy(shipx, 0);				//add enemy to the string builder
+			}else shipy=0;						//else if clear square, move to the square
 			break;
 		case 1:								//south
-			if (grid[shipx][getCols()-1] == 1){
-				AddEnemy(shipx, getCols()-1);
-			}else shipy=getCols()-1;
+			if (grid[shipx][getY()] == 1){		//same for each direction
+				AddEnemy(shipx, getY());
+			}else shipy=getY();
 			break;
 		case 2:								//east
 			if (grid[0][shipy] == 1){
@@ -114,29 +116,29 @@ public class GalaxyExplorer {
 			}else shipx=0;
 			break;
 		case 3:								//west
-			if (grid[getRows()-1][shipy] == 1){
-				AddEnemy(getRows()-1, shipy);
-			}else shipx=getRows()-1;
+			if (grid[getX()][shipy] == 1){
+				AddEnemy(getX(), shipy);
+			}else shipx=getX();
 			break;
 		}
 	}
 	
-	public void isObstacleBackWarp(int dir){
-		switch(dir){
+	public void isObstacleBackWarp(int dir){	//checks if enemy is in square after back warping
+		switch(dir){							//depending on the direction
 		case 0:								//north
-			if (grid[shipx][getCols()-1] == 1){
-				AddEnemy(shipx, getCols()-1);
-			}else shipy=getCols()-1;
+			if (grid[shipx][getY()] == 1){		//if warping back when facing north enemy is present
+				AddEnemy(shipx, getY());		//add enemy to the string builder
+			}else shipy=getY();					//else if clear, move to the square
 			break;
 		case 1:								//south
-			if (grid[shipx][0] == 1){
+			if (grid[shipx][0] == 1){			//same for each direction
 				AddEnemy(shipx, 0);
 			}else shipy=0;
 			break;
 		case 2:								//east
-			if (grid[getRows()-1][shipy] == 1){
-				AddEnemy(getRows()-1, shipy);
-			}else shipx=getRows()-1;
+			if (grid[getX()][shipy] == 1){
+				AddEnemy(getX(), shipy);
+			}else shipx=getX();
 			break;
 		case 3:								//west
 			if (grid[0][shipy] == 1){
@@ -146,8 +148,8 @@ public class GalaxyExplorer {
 		}
 	}
 	
-	public void movementForward (int dir){
-		switch (dir){
+	public void movementForward (int dir){		//method to move the ship forward 
+		switch (dir){							//depending on the direction facing
 		case 0:								//north
 			shipy++;
 			break;
@@ -163,8 +165,8 @@ public class GalaxyExplorer {
 		}
 	}
 	
-	public void movementBackwards(int dir){
-		switch(dir){
+	public void movementBackwards(int dir){		//method to move the ship backwards
+		switch(dir){							//depending on the direction facing
 		case 0:								//north
 			shipy--;
 			break;
@@ -179,8 +181,8 @@ public class GalaxyExplorer {
 			break;
 		}
 	}
-	public int movementLeft(int dir){
-		switch (dir){
+	public int movementLeft(int dir){			//method to switch direction facing left command
+		switch (dir){							//depending on the direction facing 
 		case 0:								//north
 			dir = 3;
 			break;
@@ -196,8 +198,9 @@ public class GalaxyExplorer {
 		}
 		return dir;
 	}	
-	public int movementRight(int dir){
-		switch(dir){
+	
+	public int movementRight(int dir){			//method to switch direction facing right command
+		switch(dir){							//depending on the direction facing
 		case 0:								//north
 			dir = 2;
 			break;
@@ -215,47 +218,47 @@ public class GalaxyExplorer {
 	}
 	
 	public String executeCommand(String command){
-		for(int i=0; i<command.length(); i++){
-			grid[shipx][shipy] = 2;
-			switch(command.charAt(i)){
-			case 'f':
+		for(int i=0; i<command.length(); i++){		//loop goes through the whole string command
+			grid[shipx][shipy] = 2;					//2 represents the ship
+			switch(command.charAt(i)){				//switches each character at index of i
+			case 'f':											//forward
 				try{
-					if (isObstacleFront(shipx, shipy)==false){
-						movementForward(dir);
+					if (isObstacleFront(shipx, shipy)==false){	//if method returns false
+						movementForward(dir);					//means clear, and ship goes forward
 					}
 				}
 				catch(ArrayIndexOutOfBoundsException E) {		//warping front
-					isObstacleFrontWarp(dir);
+					isObstacleFrontWarp(dir);					//using exception handling
 				}
 				break;
-			case 'b':
+			case 'b':											//backwards
 				try{
-					if (isObstacleBack(shipx, shipy)==false){
-						movementBackwards(dir);
+					if (isObstacleBack(shipx, shipy)==false){	//if method returns false
+						movementBackwards(dir);					//means clear, and ship goes backwards
 					}
 				}
 				catch (ArrayIndexOutOfBoundsException E){		//warping back
-					isObstacleBackWarp(dir);
+					isObstacleBackWarp(dir);					//using exception handling
 				}
 				break;
-			case 'l':
-				dir = movementLeft(dir);		//left command
+			case 'l':											//changes direction to left
+				dir = movementLeft(dir);		//left command method
 				break;
-			case 'r':
-				dir = movementRight(dir);		//right command
+			case 'r':											//changes direction to right
+				dir = movementRight(dir);		//right command method
 				break;
 			}
 		}
-		String result = ("("+shipx+";"+shipy+";"+direction(dir)+")"+sb);
-		return result;
+		String result = ("("+shipx+";"+shipy+";"+direction(dir)+")"+enemyShips); //string to return
+		return result;	//	X of ship	Y of ship	Direction		enemy ships encountered
 	}
 	
-	public int getRows() {
-		return grid.length; //returning rows
+	public int getX() {		//returns the X number of grid
+		return grid.length-1; //returning rows which has to be -1 
 	}
 
-	public int getCols() {
-		return grid[0].length;	//returning columns
+	public int getY() {		//returns the Y number of grid
+		return grid[0].length-1;	//returning rows which has to be -1
 	}
 
 	public static void main(String[] args){
