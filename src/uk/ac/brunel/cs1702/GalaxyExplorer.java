@@ -1,7 +1,7 @@
 package uk.ac.brunel.cs1702;
 
 public class GalaxyExplorer {
-	static int grid[][] = new int[0][0];
+	int grid[][] = new int[0][0];
 	int shipx, shipy, dir;	//ints to hold X AND Y of the ship, and the DIRECTION
 	String[] enemyCoords;	//Array that holds the coords of enemy ships
 	StringBuilder enemyShips = new StringBuilder();	//string builder to show encountered ships
@@ -31,17 +31,13 @@ public class GalaxyExplorer {
 		}
 	}
 
-	public String direction(int dir){
+	public String direction(){
 		String direction = null;
 		switch(dir){
-		case 0: direction = "N";
-				break;
-		case 1: direction = "S";
-				break;
-		case 2: direction = "E";
-				break;
-		case 3: direction = "W";
-				break;
+		case 0: direction = "N"; break;
+		case 1: direction = "S"; break;
+		case 2: direction = "E"; break;
+		case 3: direction = "W"; break;
 		}
 		return direction;			//returns the direction as string 
 	}
@@ -150,69 +146,37 @@ public class GalaxyExplorer {
 	
 	public void movementForward (int dir){		//method to move the ship forward 
 		switch (dir){							//depending on the direction facing
-		case 0:								//north
-			shipy++;
-			break;
-		case 1:								//south
-			shipy--;
-			break;
-		case 2:								//east
-			shipx++;
-			break;
-		case 3:								//west
-			shipx--;
-			break;
+		case 0:shipy++;break;
+		case 1:shipy--;break;
+		case 2:shipx++;break;
+		case 3:shipx--;break;
 		}
 	}
 	
 	public void movementBackwards(int dir){		//method to move the ship backwards
 		switch(dir){							//depending on the direction facing
-		case 0:								//north
-			shipy--;
-			break;
-		case 1:								//south
-			shipy++;
-			break;
-		case 2:								//east
-			shipx--;
-			break;
-		case 3:								//west
-			shipx++;
-			break;
+		case 0:shipy--;break;
+		case 1:shipy++;break;
+		case 2:shipx--;break;
+		case 3:shipx++;break;
 		}
 	}
-	public int movementLeft(int dir){			//method to switch direction facing left command
+	public int movementLeft(){			//method to switch direction facing left command
 		switch (dir){							//depending on the direction facing 
-		case 0:								//north
-			dir = 3;
-			break;
-		case 1:								//south
-			dir = 2;
-			break;
-		case 2:								//east
-			dir = 0;
-			break;
-		case 3:								//west
-			dir = 1;
-			break;
+		case 0:dir = 3;break;
+		case 1:dir = 2;break;
+		case 2:dir = 0;break;
+		case 3:dir = 1;break;
 		}
 		return dir;
 	}	
 	
-	public int movementRight(int dir){			//method to switch direction facing right command
+	public int movementRight(){			//method to switch direction facing right command
 		switch(dir){							//depending on the direction facing
-		case 0:								//north
-			dir = 2;
-			break;
-		case 1:								//south
-			dir = 3;
-			break;
-		case 2:								//east
-			dir = 1;
-			break;
-		case 3:								//west
-			dir = 0;
-			break;
+		case 0:dir = 2;break;
+		case 1:dir = 3;break;
+		case 2:dir = 1;break;
+		case 3:dir = 0;break;
 		}
 		return dir;
 	}
@@ -241,28 +205,25 @@ public class GalaxyExplorer {
 					isObstacleBackWarp(dir);					//using exception handling
 				}
 				break;
-			case 'l':											//changes direction to left
-				dir = movementLeft(dir);		//left command method
-				break;
-			case 'r':											//changes direction to right
-				dir = movementRight(dir);		//right command method
-				break;
+			case 'l': dir = movementLeft();break;
+			case 'r': dir = movementRight();break;
 			}
 		}
-		String result = ("("+shipx+";"+shipy+";"+direction(dir)+")"+enemyShips); //string to return
+		String result = ("("+shipx+";"+shipy+";"+direction()+")"+enemyShips); //string to return
 		return result;	//	X of ship	Y of ship	Direction		enemy ships encountered
 	}
 	
 	public int getX() {		//returns the X number of grid
-		return grid.length-1; //returning rows which has to be -1 
+		return grid.length-1; //returning size of array -1 
 	}
 
 	public int getY() {		//returns the Y number of grid
-		return grid[0].length-1;	//returning rows which has to be -1
+		return grid[0].length-1;	//returning cols of array -1
 	}
 
 	public static void main(String[] args){
-		GalaxyExplorer enterprise = new GalaxyExplorer(3,3,"(0,1)(0,2)");
-		System.out.println(enterprise.executeCommand("f"));
+		GalaxyExplorer enterprise = new GalaxyExplorer(3,3,"(0,2)");
+		System.out.println(enterprise.executeCommand("ff"));
+
 	}
 }
