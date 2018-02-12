@@ -5,13 +5,11 @@ public class GalaxyExplorer {
 	int shipx, shipy, dir;	//ints to hold X AND Y of the ship, and the DIRECTION
 	String[] enemyCoords;	//Array that holds the coords of enemy ships
 	StringBuilder enemyShips = new StringBuilder();	//string builder to show encountered ships
-	
 	//direction meaning
 	//0 = north
 	//1 = south
 	//2 = east
 	//3 = west
-	
 	public GalaxyExplorer(int x, int y, String enemyShips){
 		grid = new int[x][y];
 		for (int i=0; i<x; i++){
@@ -224,6 +222,5 @@ public class GalaxyExplorer {
 	public static void main(String[] args){
 		GalaxyExplorer enterprise = new GalaxyExplorer(3,3,"(0,2)");
 		System.out.println(enterprise.executeCommand("ff"));
-
 	}
 }
